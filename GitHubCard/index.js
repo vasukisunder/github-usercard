@@ -22,13 +22,17 @@ axios.get('https://api.github.com/users/vasukisunder')
 /* Step 4: Pass the data received from Github into your function, 
            create a new component and add it to the DOM as a child of .cards
 
-  tetondan
-  dustinmyers
-  justsml
-  luishrd
-  bigknell
-
 */
+
+const entryPoint = document.querySelector('.cards');
+
+axios.get('https://api.github.com/users/vasukisunder')
+.then(response => {
+  entryPoint.append(githubUser(response.data));
+})
+.catch(error => {
+  console.log('error', error);
+})
 
 
 
@@ -42,7 +46,17 @@ axios.get('https://api.github.com/users/vasukisunder')
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = ['tetondan', 'Dino-Muratovic', 'tippitytapp','jchern83', 'christianlewis024'];
+
+followersArray.forEach(item => {
+  axios.get('https://api.github.com/users/' + item)
+.then(response => {
+  entryPoint.append(githubUser(response.data));
+})
+.catch(error => {
+  console.log('error', error);
+})
+})
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -72,10 +86,10 @@ function githubUser(data){
   const username = document.createElement('p');
   const location = document.createElement('p');
   const profile = document.createElement('p');
-  const url = document.createElement('a');
   const followers = document.createElement('p');
   const following = document.createElement('p');
   const bio = document.createElement('p');
+  const url = document.createElement('a');
 
   card.append(image);
   card.append(cardInfo);
@@ -83,10 +97,10 @@ function githubUser(data){
   cardInfo.append(username);
   cardInfo.append(location);
   cardInfo.append(profile);
-  profile.append(url);
   cardInfo.append(followers);
   cardInfo.append(following);
   cardInfo.append(bio);
+  
 
   card.classList.add('card');
   name.classList.add('name');
@@ -95,12 +109,15 @@ function githubUser(data){
   image.src = data.avatar_url;
   name.textContent = data.name;
   username.textContent = data.login;
-  location.textContent = data.location;
-  profile.textContent = 'Profile: ';
-  url.href = data.html_url;
-  followers.textContent = data.followers;
-  following.textContent = data.following;
-  bio.textContent = data.bio;
+  location.textContent = 'Location: ' + data.location;
+  profile.textContent = 'Profile: ' 
+  url.setAttribute('href', data.html_url);
+  url.innerText = data.login;
+  followers.textContent = 'Followers: ' + data.followers;
+  following.textContent ='Following: ' + data.following;
+  bio.textContent = 'Bio: ' + data.bio;
+
+  profile.append(url);
 
   return card;
 }
